@@ -45,4 +45,4 @@ function LazyMan() {
     return new _LazyMan()
 }
 
-LazyMan().sayHello('yedi').wait(2).sayHello('yedi')
+LazyMan().sayHello('yedi').wait(2).sayHello('yedi').wait(1).sayHello("111")
