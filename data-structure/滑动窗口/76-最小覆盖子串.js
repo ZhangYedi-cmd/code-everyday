@@ -14,22 +14,28 @@ const fn = (s, t) => {
     let left = 0, right = 0, need = {}, window = {}
     // 统计needs
     for (let i = 0; i < t.length; i++) {
-        need[t[i]] = need[t[i]] ? need[t[i]]++ : 1
+        let s = t[i]
+        need[s] = need[s] ? need[s] + 1 : 1
+        console.log(need[s])
     }
+    console.log(need)
     let valid = 0, start = 0, len = Infinity
     while (right < s.length) {
         let c = s[right]
+        console.log(c)
         right++;
         if (need[c]) {
-            window[c]++
+            window[c] = window[c] ? window[c] + 1 : 1
+            // console.log(window[c])
             if (window[c] === need[c]) {
                 valid++
             }
         }
         while (valid === Object.keys(need).length) {
+            console.log("jinqu le ")
             if (right - left < len) {
-                start = left
                 len = right - left
+                start = left
             }
             let d = s[left]
             left++
@@ -41,10 +47,13 @@ const fn = (s, t) => {
             }
         }
     }
-    return len === Infinity ? "" : t.slice(start, len)
+    console.log(len === Infinity, left,right)
+    return len === Infinity ? "" : s.slice(start, len + start)
 }
 
-fn('ADOBECODEBANC', "ABC")
+const res = fn('ADOBECODEBANC', "ABC")
+
+console.log(res)
 
 
 //
