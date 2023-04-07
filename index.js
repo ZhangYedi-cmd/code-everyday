@@ -1,25 +1,33 @@
-function getAns(s) {
-    let success = 'Accept', fail = 'Wrong'
-    // 要包含数字和字母，长度至少为2
-    if (s.length < 2) return fail
-    // 判断首字母是否包含数字
-    let numsReg = new RegExp(/^[0-9]*$/),
-        bigReg = new RegExp(/[a-z]/),
-        smallReg = new RegExp(/[A-Z]/)
-    // 大小写字母都没找到  返回false
-    if (s[0].search(bigReg) === -1 && s[0].search(smallReg) === -1) {
-        return fail
-    }
-    // 首字母是字母，只需要判断以下部分有没有数字即可
-    for (var i = 1; i < s.length; i++)  {
-        if (s[i].search(numsReg) === 0) {
-            return success
+async function asyncPool(limit, arr, task) {
+    let executing = [],
+        finished = []
+
+    for (let params of arr) {
+        let p = task(params)
+        finished.push(p)
+        if (limit <= arr.length) {
+            p = p.then(res => {
+                // 执行完成之后腾出一个空位
+                executing.splice(executing.indexOf(p), 1)
+            })
+            executing.push(p)
+            if (executing.length >= limit) {
+                await Promise.race(executing)
+            }
         }
     }
-    return fail
+
+    return Promise.all(finished)
 }
 
-
-console.log(getAns('Apple'))
-console.log(getAns('Hhhh666'))
-console.log(getAns('6pple1'))
+asyncPool(
+    2,
+    [1000, 3000, 2000, 5000, 6000],
+    (params) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            console.log(params)
+            resolve(params)
+        },params)
+    })
+})
