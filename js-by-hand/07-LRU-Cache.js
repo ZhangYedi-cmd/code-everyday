@@ -11,6 +11,7 @@ LRUCache.prototype.get = function (key) {
     cacheVal.set(key, cacheVal)
     return cacheVal
 }
+
 LRUCache.prototype.put = function (key, value) {
     if (this.cacheMap.has(key)) this.cacheMap.delete(key)
     if (this.cacheMap.size >= this.capacity) {
