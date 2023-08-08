@@ -1,48 +1,49 @@
-/**
- * 实现一个LazyMan
- *
- * LazyMan().sayHello("yedi").sleep(2).sayHello("wangzhao")
- *
- * output :
- *        hello yedi!
- *        wait....2s
- *        hello wangzhao!
- */
-
-function _LazyMan() {
-    this.tasks = []
+let _LazyMan = function (name) {
+    this.taskQueue = []
     let that = this
-    // 先get到所有的任务
     // 全部push完成之后，开始执行微任务队列
     Promise.resolve().then(() => {
         // 将要执行的任务，全部丢进微任务队列执行
         let p = Promise.resolve()
-        that.tasks.map(t => {
+        that.taskQueue.map(t => {
             p = p.then(t)
+        })
+    })
+    setTimeout(async () => {
+        for (let t of that.taskQueue) {
+            await t()
+        }
+    })
+}
+
+_LazyMan.prototype.hold = function (time) {
+    this.taskQueue.push(() => {
+        return new Promise((resolve, reject) => {
+            console.log(`sleep start`)
+            setTimeout(() => {
+                console.log(`sleep end`)
+                resolve()
+            }, time * 1000)
         })
     })
 }
 
+_LazyMan.prototype.sleep = function (time) {
+    this.hold(time)
+    return this
+}
+
 _LazyMan.prototype.sayHello = function (name) {
-    this.tasks.push(() => {
+    this.taskQueue.push(() => {
         console.log(`hello ${name}`)
     })
     return this
 }
 
-_LazyMan.prototype.wait = function (time) {
-    this.tasks.push(() => {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve(1)
-            }, time * 1000)
-        })
-    })
-    return this
-}
+let LazyMan = (name) => new _LazyMan(name)
 
-function LazyMan() {
-    return new _LazyMan()
-}
-
-LazyMan().sayHello('yedi').wait(2).sayHello('yedi').wait(1).sayHello("111")
+LazyMan('yedi')
+    .sleep(1)
+    .sayHello("yedi")
+    .sleep(5)
+    .sayHello("h")

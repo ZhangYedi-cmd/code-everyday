@@ -26,3 +26,13 @@ var rob = function (nums) {
     }
     return dp[dp.length - 1]
 };
+
+
+const obj = {
+    foo: 1,
+    bar: () => {
+        return this.foo;
+    }
+}
+
+console.log(obj.bar())
