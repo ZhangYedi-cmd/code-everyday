@@ -17,7 +17,7 @@ var corpFlightBookings = function(bookings, n) {
         seats[start - 1] += num
         seats[end] -= num
     })
-    const arr =[]
+    const arr = []
     arr[0] = seats[0]
     // 复原
     for (let i = 1 ; i < seats.length - 1 ; i++) {
