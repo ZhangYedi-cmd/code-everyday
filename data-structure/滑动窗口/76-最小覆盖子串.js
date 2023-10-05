@@ -10,92 +10,37 @@
  * 解释：最小覆盖子串 "BANC" 包含来自字符串 t 的 'A'、'B' 和 'C'。
  */
 
-const fn = (s, t) => {
-    let left = 0, right = 0, need = {}, window = {}
-    // 统计needs
-    for (let i = 0; i < t.length; i++) {
-        let s = t[i]
-        need[s] = need[s] ? need[s] + 1 : 1
-        console.log(need[s])
+let minWindow = function(s, t) {
+    let window = {},
+        needs = {},
+        valid = 0,
+        len = Infinity,
+        start = 0
+
+    for (let i = 0 ; i < t.length; i++) {
+        let curr = t[i]
+        needs[curr] = needs[curr] ? needs[curr] + 1 : 1
     }
-    console.log(need)
-    let valid = 0, start = 0, len = Infinity
-    while (right < s.length) {
-        let c = s[right]
-        console.log(c)
-        right++;
-        if (need[c]) {
-            window[c] = window[c] ? window[c] + 1 : 1
-            // console.log(window[c])
-            if (window[c] === need[c]) {
-                valid++
-            }
+
+    for (let l = 0, r = 0; r < s.length; r++) {
+        let curr = s[r]
+        if (needs[curr]) {
+            window[curr] = window[curr] ? window[curr] + 1 : 1
+            valid += window[curr] === needs[curr] ? 1 : 0
         }
-        while (valid === Object.keys(need).length) {
-            console.log("jinqu le ")
-            if (right - left < len) {
-                len = right - left
-                start = left
+        // 长度满足 左指针往右滑动
+        while (Object.keys(needs).length === valid) {
+            if (r - l < len) {
+                len = r - l
+                start = l
             }
-            let d = s[left]
-            left++
-            if (need[d]) {
-                if (window[d] === need[d]) {
-                    valid--
-                }
-                window[d]--
-            }
+            // 收缩的值是不是needs中的？
+            let d = s[l]
+            l++
+            valid -= needs[d] && window[d] === needs[d] ? 1 : 0
+            window[d] -= needs[d] ? 1 : 0
         }
     }
-    console.log(len === Infinity, left,right)
-    return len === Infinity ? "" : s.slice(start, len + start)
-}
 
-const res = fn('ADOBECODEBANC', "ABC")
-
-console.log(res)
-
-
-//
-// string minWindow(string s, string t) {
-//     unordered_map<char, int> need, window;
-//     for (char c : t) need[c]++;
-//     int left = 0, right = 0;
-//     int valid = 0;
-//     // 记录最小覆盖子串的起始索引及长度
-//     int start = 0, len = INT_MAX;
-//     while (right < s.size()) {
-//         // c 是将移入窗口的字符
-//         char c = s[right];
-//         // 扩大窗口
-//         right++;
-//         // 进行窗口内数据的一系列更新
-//         if (need.count(c)) {
-//             window[c]++;
-//             if (window[c] == need[c])
-//                 valid++;
-//         }
-//
-//         // 判断左侧窗口是否要收缩
-//         while (valid == need.size()) {
-//             // 在这里更新最小覆盖子串
-//             if (right - left < len) {
-//                 start = left;
-//                 len = right - left;
-//             }
-//             // d 是将移出窗口的字符
-//             char d = s[left];
-//             // 缩小窗口
-//             left++;
-//             // 进行窗口内数据的一系列更新
-//             if (need.count(d)) {
-//                 if (window[d] == need[d])
-//                     valid--;
-//                 window[d]--;
-//             }
-//         }
-//     }
-//     // 返回最小覆盖子串
-//     return len == INT_MAX ?
-//         "" : s.substr(start, len);
-// }
+    return len === Infinity ? "" : s.slice(start, len + start + 1)
+};

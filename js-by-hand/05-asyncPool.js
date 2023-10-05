@@ -11,6 +11,7 @@ async function asyncPool(poolLimit, array, doFn) {
             executing.push(p);  //加入正在操作的队列
             // 池子满了，race执行，等有空了再push
             if (executing.length >= poolLimit) {
+                console.log("stop")
                 await Promise.race(executing);  //等待有空缺之后在进入下次循环
             }
         }
