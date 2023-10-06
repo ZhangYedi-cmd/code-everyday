@@ -1,0 +1,1 @@
+console.log('a'.charAt(0))
